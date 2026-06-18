@@ -1,3 +1,6 @@
+import axios from "axios";
+import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 function Login() {
@@ -7,9 +10,29 @@ function Login() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      const responce = await axios.post(
+        "https://dummyjson.com/auth/login" ,
+        {
+          username : data.username,
+          password : data.password,
+        }
+      );
+      console.log(responce.data);
+      localStorage.setItem("token" , responce.data.accessToken);
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+      alert("Invalid Credintial");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const navigate = useNavigate();
+  const [ loading , setLoading ] = useState(false);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -50,12 +73,14 @@ function Login() {
 
         <button
           className="w-full bg-blue-600 text-white p-2 rounded"
+          disabled={loading}
         >
-          Login
+          {loading ? "Loading ..." : "Login"}
         </button>
       </form>
     </div>
   );
 }
+
 
 export default Login;
