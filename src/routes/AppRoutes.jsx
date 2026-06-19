@@ -4,15 +4,16 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Products from "../pages/Products/Products";
 import Orders from "../pages/Orders/Orders";
 import Users from "../pages/Users/Users";
+import ProtectedRoute from "./ProtectedRoute";
 function AppRoutes() {
     return (
         <BrowserRouter>
         <Routes>
         <Route path="/" element={<Login/>} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path="/products" element={<Products/>} />
-        <Route path="/orders" element={<Orders/>} />
-        <Route path="/users" element={<Users/>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+        <Route path="/products" element={<ProtectedRoute><Products/></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Orders/></ProtectedRoute>} />
+        <Route path="/users" element={<ProtectedRoute><Users/></ProtectedRoute>} />
         </Routes>
             </BrowserRouter>
     )
