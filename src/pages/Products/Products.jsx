@@ -5,7 +5,11 @@ import AdminLayout from "../../layouts/AdminLayout";
 function Product() {
     const [products , setProducts] = useState([]);
     const [currentPage , setCurrentPage] = useState(1);
+    const [search , setSearch] = useState("");
     const iteamPerPage = 5;
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
     const fetchProducts = async () => {
         try {
             const responce = await axios.get(
@@ -20,15 +24,22 @@ function Product() {
     useEffect(() => {
         fetchProducts();
     } , []);
+    const filteredProducts = products.filter((product) => product.title.toLowerCase().includes(search.toLocaleLowerCase()));
     const lastIndex = currentPage * iteamPerPage;
     const firstPage = lastIndex - iteamPerPage;
-    const currentProducts = products.slice(firstPage , lastIndex);
-    const totalPage = Math.ceil(products.length / iteamPerPage)
+    const currentProducts = filteredProducts.slice(firstPage , lastIndex);
+    const totalPage = Math.ceil(filteredProducts.length / iteamPerPage)
     return (
         <AdminLayout>
             <h1 className="text-3xl font-bold mb-6">
                 Products
             </h1>
+            <input
+            type="text"
+            placeholder="Search Product"
+            className="border p-2 rounded mb-4 w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}/>
             <table className="w-full bg-white shadow rounded">
                 <thead>
                 <tr className="bg-gray-200">
@@ -55,7 +66,7 @@ function Product() {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
                 >
-                    Prev
+                    Previou
                 </button>
                 <span className="font-bold">
                     Page {currentPage} of {totalPage}
