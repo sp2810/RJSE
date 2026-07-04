@@ -7,7 +7,11 @@ function Product() {
     const [currentPage , setCurrentPage] = useState(1);
     const [search , setSearch] = useState("");
     const [selectedProduct , setSelectedProduct] = useState(null);
+    const [editProduct , setEdidtProduct] = useState(null);
     const iteamPerPage = 5;
+    const handleEdit = (product) => {
+         setEdidtProduct(product);
+    }
     useEffect(() => {
         setCurrentPage(1);
     }, [search]);
@@ -25,6 +29,24 @@ function Product() {
     useEffect(() => {
         fetchProducts();
     } , []);
+    const handleUpdate = async () => {
+        try {
+            const responce = await axios.put(
+                `https://dummyjson.com/products/${editProduct.id}`,
+                {
+                    title : editProduct.title ,
+                    price : editProduct.price ,
+                    category : editProduct.category
+                }
+            );
+            console.log(responce.data);
+            alert("Product Updated Successfully");
+            setEdidtProduct(null);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
     const filteredProducts = products.filter((product) => product.title.toLowerCase().includes(search.toLocaleLowerCase()));
     const lastIndex = currentPage * iteamPerPage;
     const firstPage = lastIndex - iteamPerPage;
@@ -54,9 +76,13 @@ function Product() {
                 <tbody>
 {currentProducts.map((product) => (
     <tr key={product.id} className="text-center border-b">
-        <td><button className="bg-blue-500 text-white px-3 py-1 rounded"
+        <td className="p-3 flex gap-2 justify-center"><button className="bg-blue-500 text-white px-3 py-1 rounded"
         onClick={() => setSelectedProduct(product)}>
-            View</button></td>
+            View</button>
+            <button className="bg-green-500 text-white px-3 py-1 rounded"
+                onClick={() => handleEdit(product)}>
+                  Edit
+                </button></td>
         <td className="p-3">{product.id}</td>
         <td className="p-3">{product.title}</td>
         <td className="p-3">{product.price}</td>
@@ -80,6 +106,44 @@ function Product() {
                         </button>
                     </div>
                 </div>
+            )};
+            {editProduct && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded w-96">
+                      <h2 className="text-2xl font-bold mb-4">
+                        Edit Form
+                      </h2>
+                      <input
+                      type="text"
+                      value={editProduct.title}
+                      className="w-full border p-2 mb-3 rounded"
+                      onChange={(e) => setEdidtProduct({
+                        ...editProduct,
+                        title:  e.target.value
+                      })}/>
+                      <input
+                      type="number"
+                      value={editProduct.price}
+                      className="w-full border p-2 mb-3 rounded"
+                      onChange={(e) => setEdidtProduct({
+                        ...editProduct,
+                        price:  e.target.value
+                      })}/>
+                      <input
+                      type="text"
+                      value={editProduct.category}
+                      className="w-full border p-2 mb-3 rounded"
+                      onChange={(e) => setEdidtProduct({
+                        ...editProduct,
+                        category:  e.target.value
+                      })}/>
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded"
+                      onClick={handleUpdate}>
+                        Update
+                      </button>
+                    </div>
+                </div>
+
             )}
             <div className="flex justify-center items-center gap-4 mt-6">
                 <button
