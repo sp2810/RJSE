@@ -5,6 +5,7 @@ import Products from "../pages/Products/Products";
 import Orders from "../pages/Orders/Orders";
 import Users from "../pages/Users/Users";
 import ProtectedRoute from "./ProtectedRoute";
+import AddProduct from "../pages/AddProduct/AddProduct";
 function AppRoutes() {
     return (
         <BrowserRouter>
@@ -14,6 +15,7 @@ function AppRoutes() {
         <Route path="/products" element={<ProtectedRoute><Products/></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><Orders/></ProtectedRoute>} />
         <Route path="/users" element={<ProtectedRoute><Users/></ProtectedRoute>} />
+        <Route path="/add-product" element={<ProtectedRoute><AddProduct/></ProtectedRoute>} />
         </Routes>
             </BrowserRouter>
     )

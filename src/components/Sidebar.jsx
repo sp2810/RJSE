@@ -14,6 +14,9 @@ function Sidebar() {
                     <Link to="/products">Products</Link>
                 </li>
                 <li>
+                    <Link to="/add-product">Add Product</Link>
+                </li>
+                <li>
                     <Link to="/orders">Orders</Link>
                 </li>
                 <li>

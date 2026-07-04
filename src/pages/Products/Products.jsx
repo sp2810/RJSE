@@ -6,6 +6,7 @@ function Product() {
     const [products , setProducts] = useState([]);
     const [currentPage , setCurrentPage] = useState(1);
     const [search , setSearch] = useState("");
+    const [selectedProduct , setSelectedProduct] = useState(null);
     const iteamPerPage = 5;
     useEffect(() => {
         setCurrentPage(1);
@@ -43,6 +44,7 @@ function Product() {
             <table className="w-full bg-white shadow rounded">
                 <thead>
                 <tr className="bg-gray-200">
+                    <th className="p-3">Action</th>
                     <th className="p-3">ID</th>
                     <th className="p-3">Name</th>
                     <th className="p-3">Price</th>
@@ -52,6 +54,9 @@ function Product() {
                 <tbody>
 {currentProducts.map((product) => (
     <tr key={product.id} className="text-center border-b">
+        <td><button className="bg-blue-500 text-white px-3 py-1 rounded"
+        onClick={() => setSelectedProduct(product)}>
+            View</button></td>
         <td className="p-3">{product.id}</td>
         <td className="p-3">{product.title}</td>
         <td className="p-3">{product.price}</td>
@@ -60,6 +65,22 @@ function Product() {
 ))}
                 </tbody>
             </table>
+            {selectedProduct && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded w-96">
+                        <h2 className="text-2xl font-bold mb-4">
+                            {selectedProduct.title}
+                        </h2>
+                        <p><strong>Price :</strong>${selectedProduct.price}</p>
+                        <p><strong>Category :</strong>${selectedProduct.category}</p>
+                        <p><strong>Description :</strong>${selectedProduct.description}</p>
+                        <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                        onClick={() => setSelectedProduct(null)}>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="flex justify-center items-center gap-4 mt-6">
                 <button
                 className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-400"
