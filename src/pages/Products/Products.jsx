@@ -8,9 +8,13 @@ function Product() {
     const [search , setSearch] = useState("");
     const [selectedProduct , setSelectedProduct] = useState(null);
     const [editProduct , setEdidtProduct] = useState(null);
+    const [deleteProduct , setDeleteProduct] = useState(null);
     const iteamPerPage = 5;
     const handleEdit = (product) => {
          setEdidtProduct(product);
+    }
+    const handleDelete = (product) => {
+        setDeleteProduct(product);
     }
     useEffect(() => {
         setCurrentPage(1);
@@ -42,6 +46,23 @@ function Product() {
             console.log(responce.data);
             alert("Product Updated Successfully");
             setEdidtProduct(null);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+    const confirmDelete = async () => {
+        try {
+            await axios.delete(
+                `https://dummyjson.com/products/${deleteProduct.id}`
+            );
+            setProducts(
+              products.filter(
+                (product) => product.id !== deleteProduct.id
+              )
+            )
+            alert("Product Deleted Successfully");
+            setDeleteProduct(null);
         }
         catch (error) {
             console.log(error);
@@ -82,7 +103,10 @@ function Product() {
             <button className="bg-green-500 text-white px-3 py-1 rounded"
                 onClick={() => handleEdit(product)}>
                   Edit
-                </button></td>
+                </button>
+                <button className="bg-red-500 text-white px-3 py-1 rounded"
+                onClick={() => handleDelete(product)}>
+                    Delete</button></td>
         <td className="p-3">{product.id}</td>
         <td className="p-3">{product.title}</td>
         <td className="p-3">{product.price}</td>
@@ -144,6 +168,32 @@ function Product() {
                     </div>
                 </div>
 
+            )};
+            {deleteProduct && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded w-96">
+                        <h2 className="text-xl font-bold mb-4">
+                            Delete Product
+                        </h2>
+                        <p>
+                            Are you sure you want to delete
+                            <strong>{deleteProduct.title}</strong>
+                        </p>
+                        <div className="flex justify-end gap-3 mt-5">
+                            <button
+                            className="bg-gray-500 text-white px-4 py-2 rounded"
+                            onClick={() => setDeleteProduct(null)}>
+                                Cancle
+                            </button>
+                            <button className="bg-red-500 text-white px-4 py-2 rounded"
+                            onClick={confirmDelete}>
+                                Delete
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
             )}
             <div className="flex justify-center items-center gap-4 mt-6">
                 <button
