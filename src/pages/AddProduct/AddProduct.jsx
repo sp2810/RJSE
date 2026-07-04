@@ -1,6 +1,7 @@
 import { useState } from "react";
-import AdminLayout from "../../../layouts/AdminLayout";
+import AdminLayout from "../../layouts/AdminLayout";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function AddProduct() {
     const [fromData , setFromData] = useState({
@@ -16,16 +17,18 @@ const handleChange = (e) => {
         [e.target.name]: e.target.value
     });
 };
+const navigate = useNavigate();
 
 const handleSubmit = async (e) => {
-e.prevenDefault();
+e.preventDefault();
 try {
     const responce = await axios.post(
         "https://dummyjson.com/products/add",
         fromData
     );
     console.log(responce.data);
-    alert("Product Added Successfully")
+    alert("Product Added Successfully");
+    navigate("/product");
 } catch (error) {
     console.log(error);
 }
@@ -36,7 +39,8 @@ try {
                 <h1 className="text-2xl font-bold mb-4">
                     Add Product
                 </h1>
-                <input
+                <form onSubmit={handleSubmit}>
+                    <input
                 type="text"
                 name="title"
                 placeholder="Title"
@@ -59,10 +63,14 @@ try {
                 placeholder="Description"
                 className="w-full border p-2 mb-3 rounded"
                 onChange={handleChange}/>
-                <button className="w-full bg-blue-500 text-white p-2 rounded">
+                <button className="w-full bg-blue-500 text-white p-2 rounded"
+                type="submit">
                     Add Product
                 </button>
+                </form>
             </div>
         </AdminLayout>
     )
 }
+
+export default AddProduct;
