@@ -11,6 +11,7 @@ function Product() {
     const [editProduct , setEdidtProduct] = useState(null);
     const [deleteProduct , setDeleteProduct] = useState(null);
     const [loading , setLoading] = useState(false);
+    const [sortOption , setSortOption] = useState("");
     const iteamPerPage = 5;
     const handleEdit = (product) => {
          setEdidtProduct(product);
@@ -76,21 +77,54 @@ function Product() {
         }
     };
     const filteredProducts = products.filter((product) => product.title.toLowerCase().includes(search.toLocaleLowerCase()));
+    const sortedProduts = [...filteredProducts];
+    if (sortOption === "name-asc") {
+        sortedProduts.sort((a , b) =>
+        a.title.localeCompare(b.title)
+    );
+    }
+    if (sortOption === "name-desc") {
+        sortedProduts.sort((a , b) =>
+        b.title.localeCompare(a.title)
+    );
+    }
+    if (sortOption === "price-low") {
+        sortedProduts.sort((a , b) =>
+        a.price - b.price
+    );
+    }
+    if (sortOption === "price-low") {
+        sortedProduts.sort((a , b) =>
+        b.price - a.price
+    );
+    }
     const lastIndex = currentPage * iteamPerPage;
     const firstPage = lastIndex - iteamPerPage;
-    const currentProducts = filteredProducts.slice(firstPage , lastIndex);
-    const totalPage = Math.ceil(filteredProducts.length / iteamPerPage)
+    const currentProducts = sortedProduts.slice(firstPage , lastIndex);
+    const totalPage = Math.ceil(sortedProduts.length / iteamPerPage);
     return (
         <AdminLayout>
             <h1 className="text-3xl font-bold mb-6">
                 Products
             </h1>
-            <input
+            <div className="p-3 flex gap-2 justify-center">
+                <input
             type="text"
             placeholder="Search Product"
             className="border p-2 rounded mb-4 w-full"
             value={search}
             onChange={(e) => setSearch(e.target.value)}/>
+            <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="border p-2 rounded mb-4 ml-4">
+                <option value="">Sort Product</option>
+                <option value="name-asc">Name (A - Z)</option>
+                <option value="name-desc">Name (Z - A)</option>
+                <option value="price-low">Price (Low - High)</option>
+                <option value="price-high">Price (High - Low)</option>
+            </select>
+            </div>
             {loading ? (
                 <Loader/>
             ) : (
