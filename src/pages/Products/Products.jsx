@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AdminLayout from "../../layouts/AdminLayout";
+import Loader from "../../components/Loader";
 
 function Product() {
     const [products , setProducts] = useState([]);
@@ -9,6 +10,7 @@ function Product() {
     const [selectedProduct , setSelectedProduct] = useState(null);
     const [editProduct , setEdidtProduct] = useState(null);
     const [deleteProduct , setDeleteProduct] = useState(null);
+    const [loading , setLoading] = useState(false);
     const iteamPerPage = 5;
     const handleEdit = (product) => {
          setEdidtProduct(product);
@@ -21,6 +23,7 @@ function Product() {
     }, [search]);
     const fetchProducts = async () => {
         try {
+            setLoading(true);
             const responce = await axios.get(
                 "https://dummyjson.com/products"
             );
@@ -28,6 +31,9 @@ function Product() {
         }
         catch (error) {
             console.log(error);
+        }
+        finally {
+            setLoading(false);
         }
     }
     useEffect(() => {
@@ -66,6 +72,7 @@ function Product() {
         }
         catch (error) {
             console.log(error);
+            alert(error.massage);
         }
     };
     const filteredProducts = products.filter((product) => product.title.toLowerCase().includes(search.toLocaleLowerCase()));
@@ -84,7 +91,10 @@ function Product() {
             className="border p-2 rounded mb-4 w-full"
             value={search}
             onChange={(e) => setSearch(e.target.value)}/>
-            <table className="w-full bg-white shadow rounded">
+            {loading ? (
+                <Loader/>
+            ) : (
+                <table className="w-full bg-white shadow rounded">
                 <thead>
                 <tr className="bg-gray-200">
                     <th className="p-3">Action</th>
@@ -115,6 +125,7 @@ function Product() {
 ))}
                 </tbody>
             </table>
+            )}
             {selectedProduct && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded w-96">
@@ -186,8 +197,9 @@ function Product() {
                                 Cancle
                             </button>
                             <button className="bg-red-500 text-white px-4 py-2 rounded"
-                            onClick={confirmDelete}>
-                                Delete
+                            onClick={confirmDelete}
+                            disabled={loading}>
+                                {loading ? "Delating ..." : "Delete Product"}
                             </button>
                         </div>
 

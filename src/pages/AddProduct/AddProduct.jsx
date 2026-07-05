@@ -2,6 +2,7 @@ import { useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 function AddProduct() {
     const [fromData , setFromData] = useState({
@@ -10,6 +11,7 @@ price: "" ,
 category: "" ,
 description: ""
 });
+const [loading , setLoading] = useState(false);
 
 const handleChange = (e) => {
     setFromData({
@@ -22,15 +24,19 @@ const navigate = useNavigate();
 const handleSubmit = async (e) => {
 e.preventDefault();
 try {
+    setLoading(true);
     const responce = await axios.post(
         "https://dummyjson.com/products/add",
         fromData
     );
     console.log(responce.data);
     alert("Product Added Successfully");
-    navigate("/product");
+    navigate("/products");
 } catch (error) {
     console.log(error);
+}
+finally {
+    setLoading(false);
 }
 };
     return(
@@ -64,13 +70,13 @@ try {
                 className="w-full border p-2 mb-3 rounded"
                 onChange={handleChange}/>
                 <button className="w-full bg-blue-500 text-white p-2 rounded"
-                type="submit">
-                    Add Product
+                type="submit"
+                disabled={loading}>
+                    {loading ? "Adding ..." : "Add Product"}
                 </button>
                 </form>
             </div>
         </AdminLayout>
     )
 }
-
 export default AddProduct;
